@@ -3,8 +3,8 @@ output "bucket_arn" {
   value       = aws_s3_bucket.this.arn
 }
 
-output "bucket_name" {
-  description = "The bucket name that is created."
+output "bucket" {
+  description = "The bucket that is created."
   value       = aws_s3_bucket.this.bucket
 }
 
