@@ -7,5 +7,9 @@ terraform {
       # V5+ does not exist yet, may contain breaking changes.
       version = "~> 4.9"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.4"
+    }
   }
 }

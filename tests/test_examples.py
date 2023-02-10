@@ -5,6 +5,8 @@ This test verifies that each example works by executing it.
 """
 
 import pytest
+import boto3
+import json
 
 from tests.conftest import terraform_apply_and_output
 
@@ -12,34 +14,22 @@ from tests.conftest import terraform_apply_and_output
 
 
 @pytest.fixture(scope="module")
-def tf_output_basic():
+def output():
     # tf_output_basic is a re-usable test fixture.
     yield from terraform_apply_and_output("examples/basic")
 
 
 # Execute a test with the tf_output_basic fixture
-def test_examples_basic(tf_output_basic):
+def test_examples_basic(output):
     # Do nothing else here; but at least TF apply must have run successfully.
     pass
 
 
-'''
-# Further examples of how to test.
-# Delete / modify as you wish.
+def test_s3_bucket_creation(output, profile):
+    # Verify that the bucket was actually created with the specified name
+    bucket_name = output["module_example"]["bucket_name"]
 
-# Multiple uses of the same fixture will re-use the fixture output
-# and will not cause repeated TF applies.
-
-def test_examples_basic2(tf_output_basic):
-    # Do nothing else here; but at least TF apply must have run successfully.
-    pass
-
-# Example of doing detailed testing against TF output
-def test_examples_basic_3(tf_output_basic):
-    # Verify that the s3 bucket was actually created with the specified name
-    bucket_name = output["module_example"]["aws_s3_bucket"]["bucket"]
-
-    session = boto3.Session(profile_name=profile)
+    session = boto3.Session(profile_name=profile, region_name="af-south-1")
     s3 = session.client("s3")
 
     response = s3.list_buckets()
@@ -48,20 +38,72 @@ def test_examples_basic_3(tf_output_basic):
         if bucket["Name"] == bucket_name:
             found = True
     assert found
-    """
-
-# An example of how to test that TF plan works without doing an actual apply
-@pytest.fixture(scope="module")
-def tf_plan_advanced():
-    yield from terraform_plan("examples/advanced")
 
 
-def test_examples_advanced_1(tf_plan_advanced):
-    # Do nothing else here; but at least TF plan must have run successfully.
-    pass
+def test_s3_bucket_encryption(profile, output):
+    # Verify that the bucket objects will be encrypted with the correct KMS key
+    # Verify that bucket key is enabled to reduce costs
+    bucket_name = output["module_example"]["bucket_name"]
 
-def test_examples_advanced_2(tf_plan_advanced):
-    # Do nothing else here; but at least TF plan must have run successfully.
-    pass
+    expected_kms_key_id = output["kms_key_arn"]
+    apparent_kms_key_id = output["module_example"]["kms_key_id"]
+    assert expected_kms_key_id == apparent_kms_key_id
 
-'''
+    session = boto3.Session(profile_name=profile, region_name="af-south-1")
+    s3 = session.client("s3")
+
+    response = s3.get_bucket_encryption(Bucket=bucket_name)
+
+    rules = response["ServerSideEncryptionConfiguration"]["Rules"]
+    assert 1 == len(rules)
+    rule = rules[0]
+
+    assert "aws:kms" == rule["ApplyServerSideEncryptionByDefault"]["SSEAlgorithm"]
+
+    actual_kms_key_id = rule["ApplyServerSideEncryptionByDefault"]["KMSMasterKeyID"]
+    assert actual_kms_key_id == expected_kms_key_id
+
+    assert rule["BucketKeyEnabled"]
+
+
+def test_s3_bucket_policy(profile, output):
+    # Verify that unencrypted communication is denied
+    # Verify that the default bucket policy was applied
+    bucket_name = output["module_example"]["bucket_name"]
+
+    apparent_bucket_policy = json.loads(
+        output["module_example"]["default_bucket_policy_document"]["json"]
+    )
+    statements = apparent_bucket_policy["Statement"]
+    assert 1 == len(statements)
+    statement = statements[0]
+
+    assert "DenyUnencryptedCommunication" == statement["Sid"]
+    assert "Deny" == statement["Effect"]
+    assert "*" == statement["Principal"]["AWS"]
+    assert "s3:*" == statement["Action"]
+
+    expected_resources = [
+        f"arn:aws:s3:::{bucket_name}",
+        f"arn:aws:s3:::{bucket_name}/*",
+    ]
+    assert set(statement["Resource"]) == set(expected_resources)
+    assert "false" == statement["Condition"]["Bool"]["aws:SecureTransport"][0]
+
+    # ### Compare apparent to actual
+    # Change ["false"] to "false" so the next comparison passes
+    if "false" == statement["Condition"]["Bool"]["aws:SecureTransport"][0]:
+        statement["Condition"]["Bool"]["aws:SecureTransport"] = "false"
+
+    apparent_bucket_policy["Statement"] = [statement]
+    apparent_bucket_policy = json.dumps(apparent_bucket_policy, sort_keys=True)
+
+    session = boto3.Session(profile_name=profile)
+    s3 = session.client("s3")
+
+    response = s3.get_bucket_policy(Bucket=bucket_name)
+
+    actual_bucket_policy = json.loads(response["Policy"])
+    actual_bucket_policy = json.dumps(actual_bucket_policy, sort_keys=True)
+
+    assert actual_bucket_policy == apparent_bucket_policy
