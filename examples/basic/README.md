@@ -12,7 +12,7 @@ resource "random_integer" "naming" {
 }
 
 locals {
-  naming_prefix = "s3-example-basic-${random_id.naming.id}"
+  naming_prefix = "s3-example-basic-${random_integer.naming.id}"
 }
 
 # Using a KMS key is optional.
