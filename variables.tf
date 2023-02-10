@@ -1,10 +1,6 @@
 ######################################################################
 ## Required
 ######################################################################
-variable "naming_prefix" {
-  type        = string
-  description = "Naming prefix for all created resources."
-}
 
 ######################################################################
 ## Optional
@@ -27,6 +23,21 @@ variable "create_aws_s3_bucket_lifecycle_configuration" {
   default     = true
 }
 
+variable "name" {
+  type        = string
+  description = "Name for S3 bucket. Also see `naming_method`"
+  default     = null
+}
+
+variable "naming_method" {
+  type        = string
+  description = "Whether to use `bucket`, `bucket_prefix` or neither when creating the `aws_s3_bucket` resource."
+  default     = "BUCKET"
+  validation {
+    condition     = contains(["BUCKET", "BUCKET_PREFIX", "NONE"], var.naming_method)
+    error_message = "Must be one of: \"BUCKET\", \"BUCKET_PREFIX\" or \"NONE\"."
+  }
+}
 
 variable "tags" {
   description = "Map of additional tags to assign to created resources. If configured with a provider `default_tags` configuration block present, tags with matching keys will overwrite those defined at the provider-level."

@@ -25,11 +25,12 @@ module "example" {
   # version = "~> 1.0"
   source = "../../"
 
-  # Module parameters:
-  naming_prefix = local.naming_prefix
+  # Required module parameters:
+  name = local.naming_prefix
 
-  # Using a KMS key is optional.
-  kms_key_id = aws_kms_key.key.arn
+  # Optional module parameters:
+  naming_method = "BUCKET_PREFIX"
+  kms_key_id    = aws_kms_key.key.arn
 
   tags = {}
 }
