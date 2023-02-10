@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/cloudandthings/terraform-aws-s3-bucket/compare/v1.0.0...v1.1.0) (2023-02-10)
+
+
+### Features
+
+* New naming methods ([7c8f3b9](https://github.com/cloudandthings/terraform-aws-s3-bucket/commit/7c8f3b9fb282d4d748cb1576ff1e86f5fcc43a54))
+
 ## 1.0.0 (2023-02-10)
 
 
