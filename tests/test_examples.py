@@ -25,11 +25,11 @@ def test_examples_basic(output):
     pass
 
 
-def test_s3_bucket_creation(output, profile):
+def test_s3_bucket_creation(output):
     # Verify that the bucket was actually created with the specified name
     bucket_name = output["module_example"]["bucket_name"]
 
-    session = boto3.Session(profile_name=profile, region_name="af-south-1")
+    session = boto3.Session()
     s3 = session.client("s3")
 
     response = s3.list_buckets()
@@ -40,7 +40,7 @@ def test_s3_bucket_creation(output, profile):
     assert found
 
 
-def test_s3_bucket_encryption(profile, output):
+def test_s3_bucket_encryption(output):
     # Verify that the bucket objects will be encrypted with the correct KMS key
     # Verify that bucket key is enabled to reduce costs
     bucket_name = output["module_example"]["bucket_name"]
@@ -49,7 +49,7 @@ def test_s3_bucket_encryption(profile, output):
     apparent_kms_key_id = output["module_example"]["kms_key_id"]
     assert expected_kms_key_id == apparent_kms_key_id
 
-    session = boto3.Session(profile_name=profile, region_name="af-south-1")
+    session = boto3.Session()
     s3 = session.client("s3")
 
     response = s3.get_bucket_encryption(Bucket=bucket_name)
@@ -66,7 +66,7 @@ def test_s3_bucket_encryption(profile, output):
     assert rule["BucketKeyEnabled"]
 
 
-def test_s3_bucket_policy(profile, output):
+def test_s3_bucket_policy(output):
     # Verify that unencrypted communication is denied
     # Verify that the default bucket policy was applied
     bucket_name = output["module_example"]["bucket_name"]
@@ -98,7 +98,7 @@ def test_s3_bucket_policy(profile, output):
     apparent_bucket_policy["Statement"] = [statement]
     apparent_bucket_policy = json.dumps(apparent_bucket_policy, sort_keys=True)
 
-    session = boto3.Session(profile_name=profile)
+    session = boto3.Session()
     s3 = session.client("s3")
 
     response = s3.get_bucket_policy(Bucket=bucket_name)
