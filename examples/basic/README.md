@@ -5,8 +5,19 @@
 #--------------------------------------------------------------------------------------
 # Supporting resources
 #--------------------------------------------------------------------------------------
+# Generate unique naming for resources
+resource "random_pet" "naming" {
+}
 
-# None
+locals {
+  naming_prefix = "s3-bucket-example-basic-${random_pet.naming.id}"
+}
+
+# Using a KMS key is optional.
+resource "aws_kms_key" "key" {
+  description             = local.naming_prefix
+  deletion_window_in_days = 7
+}
 
 #--------------------------------------------------------------------------------------
 # Example
@@ -19,7 +30,12 @@ module "example" {
   source = "../../"
 
   # Module parameters:
-  # tags = {}
+  naming_prefix = local.naming_prefix
+
+  # Using a KMS key is optional.
+  kms_key_id = aws_kms_key.key.arn
+
+  tags = {}
 }
 ```
 ----
@@ -46,12 +62,16 @@ module "example" {
 
 | Name | Description |
 |------|-------------|
+| <a name="output_kms_key_arn"></a> [kms\_key\_arn](#output\_kms\_key\_arn) | KMS key ARN |
 | <a name="output_module_example"></a> [module\_example](#output\_module\_example) | module.example |
 
 ----
 ### Providers
 
-No providers.
+| Name | Version |
+|------|---------|
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 4.9 |
+| <a name="provider_random"></a> [random](#provider\_random) | ~> 3.4 |
 
 ----
 ### Requirements
@@ -60,11 +80,15 @@ No providers.
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.1 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.9 |
+| <a name="requirement_random"></a> [random](#requirement\_random) | ~> 3.4 |
 
 ----
 ### Resources
 
-No resources.
+| Name | Type |
+|------|------|
+| [aws_kms_key.key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
+| [random_pet.naming](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) | resource |
 
 ----
 <!-- END_TF_DOCS -->

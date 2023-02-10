@@ -3,3 +3,5 @@ quiet: true
 skip-check:
   # Github: Ensure top-level permissions are not set to write-all
   - CKV2_GHA_1
+  # AWS: Ensure rotation for customer created CMKs is enabled
+  - CKV_AWS_7

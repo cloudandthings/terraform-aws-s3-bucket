@@ -14,5 +14,6 @@
 
 ---
 exclude:
-# Add IDs of checks to ignore them
-#  - aws-sns-topic-encryption-use-cmk
+  # Add IDs of checks to ignore them
+  # Dont want to rotate a bucket key
+  - aws-kms-auto-rotate-keys

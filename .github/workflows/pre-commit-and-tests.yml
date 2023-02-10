@@ -70,7 +70,9 @@ jobs:
         if: failure()
         run: |
           LOG_FILE=~/.cache/pre-commit/pre-commit.log
-          [ -f $LOG_FILE ] || cat $LOG_FILE
+          if [ -f "$LOG_FILE" ]; then
+            cat $LOG_FILE
+          fi
 
   #--------------------------------------------------------------
   # TESTS
