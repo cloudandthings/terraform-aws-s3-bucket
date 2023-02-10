@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/cloudandthings/terraform-aws-s3-bucket/compare/v1.1.0...v1.1.1) (2023-02-10)
+
+
+### Bug Fixes
+
+* Avoid dependency on bucket id ([#5](https://github.com/cloudandthings/terraform-aws-s3-bucket/issues/5)) ([069cbd2](https://github.com/cloudandthings/terraform-aws-s3-bucket/commit/069cbd229a13845a0ad06bb04b1277a8fd7e38bd))
+
 ## [1.1.0](https://github.com/cloudandthings/terraform-aws-s3-bucket/compare/v1.0.0...v1.1.0) (2023-02-10)
 
 
