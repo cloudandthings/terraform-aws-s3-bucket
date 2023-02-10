@@ -89,9 +89,9 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_bucket"></a> [bucket](#output\_bucket) | The bucket that is created. |
 | <a name="output_bucket_arn"></a> [bucket\_arn](#output\_bucket\_arn) | The bucket ARN that is created. |
 | <a name="output_bucket_id"></a> [bucket\_id](#output\_bucket\_id) | The bucket id that is created. |
-| <a name="output_bucket_name"></a> [bucket\_name](#output\_bucket\_name) | The bucket name that is created. |
 | <a name="output_default_bucket_policy_document"></a> [default\_bucket\_policy\_document](#output\_default\_bucket\_policy\_document) | Default bucket policy document, attached to the bucket if `var.attach_default_bucket_policy=true`. |
 | <a name="output_kms_key_id"></a> [kms\_key\_id](#output\_kms\_key\_id) | The KMS key ID used for encrypting bucket objects. |
 | <a name="output_region"></a> [region](#output\_region) | The bucket region. |
