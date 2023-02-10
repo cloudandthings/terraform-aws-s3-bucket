@@ -27,7 +27,7 @@ def test_examples_basic(output):
 
 def test_s3_bucket_creation(output):
     # Verify that the bucket was actually created with the specified name
-    bucket_name = output["module_example"]["bucket_name"]
+    bucket_name = output["module_example"]["bucket"]
 
     session = boto3.Session()
     s3 = session.client("s3")
@@ -43,7 +43,7 @@ def test_s3_bucket_creation(output):
 def test_s3_bucket_encryption(output):
     # Verify that the bucket objects will be encrypted with the correct KMS key
     # Verify that bucket key is enabled to reduce costs
-    bucket_name = output["module_example"]["bucket_name"]
+    bucket_name = output["module_example"]["bucket"]
 
     expected_kms_key_id = output["kms_key_arn"]
     apparent_kms_key_id = output["module_example"]["kms_key_id"]
@@ -69,7 +69,7 @@ def test_s3_bucket_encryption(output):
 def test_s3_bucket_policy(output):
     # Verify that unencrypted communication is denied
     # Verify that the default bucket policy was applied
-    bucket_name = output["module_example"]["bucket_name"]
+    bucket_name = output["module_example"]["bucket"]
 
     apparent_bucket_policy = json.loads(
         output["module_example"]["default_bucket_policy_document"]["json"]
