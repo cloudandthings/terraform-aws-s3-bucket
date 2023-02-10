@@ -1,0 +1,10 @@
+terraform_init_examples () {
+PURPLE='\033[0;35m'
+for dir in examples/*/
+do
+  echo -e "${PURPLE}** terraform_init_examples: $dir **"
+  cd $dir
+  terraform init
+  cd ../..
+done
+}
