@@ -9,7 +9,11 @@
 #tfsec:ignore:aws-s3-no-public-buckets
 #tfsec:ignore:aws-s3-specify-public-access-block
 resource "aws_s3_bucket" "this" {
-  bucket = var.naming_prefix
+
+  # Naming.
+  bucket        = var.naming_method == "BUCKET" ? var.name : null
+  bucket_prefix = var.naming_method == "BUCKET_PREFIX" ? var.name : null
+  # If neither are provided then a unique name is generated.
 
   force_destroy = var.force_destroy
   #checkov:skip=CKV2_AWS_6:S3 public access block is applied at an account level.

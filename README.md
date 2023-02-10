@@ -75,7 +75,8 @@ See [`CONTRIBUTING.md`](./.github/CONTRIBUTING.md) for further information.
 | <a name="input_general_read_only_aws_principals"></a> [general\_read\_only\_aws\_principals](#input\_general\_read\_only\_aws\_principals) | List of AWS principals to give read access to all bucket objects via bucket policy resource. | `list(string)` | `[]` | no |
 | <a name="input_general_read_write_aws_principals"></a> [general\_read\_write\_aws\_principals](#input\_general\_read\_write\_aws\_principals) | List of AWS principals to give read and write access to all bucket objects via bucket policy resource. | `list(string)` | `[]` | no |
 | <a name="input_kms_key_id"></a> [kms\_key\_id](#input\_kms\_key\_id) | KMS key ID to use for encrypting bucket objects. | `string` | `null` | no |
-| <a name="input_naming_prefix"></a> [naming\_prefix](#input\_naming\_prefix) | Naming prefix for all created resources. | `string` | n/a | yes |
+| <a name="input_name"></a> [name](#input\_name) | Name for S3 bucket. Also see `naming_method` | `string` | `null` | no |
+| <a name="input_naming_method"></a> [naming\_method](#input\_naming\_method) | Whether to use `bucket`, `bucket_prefix` or neither when creating the `aws_s3_bucket` resource. | `string` | `"BUCKET"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Map of additional tags to assign to created resources. If configured with a provider `default_tags` configuration block present, tags with matching keys will overwrite those defined at the provider-level. | `map(string)` | `{}` | no |
 
 ----
