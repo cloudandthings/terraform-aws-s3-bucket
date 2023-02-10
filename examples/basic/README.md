@@ -6,11 +6,13 @@
 # Supporting resources
 #--------------------------------------------------------------------------------------
 # Generate unique naming for resources
-resource "random_pet" "naming" {
+resource "random_integer" "naming" {
+  min = 100000
+  max = 999999
 }
 
 locals {
-  naming_prefix = "s3-bucket-example-basic-${random_pet.naming.id}"
+  naming_prefix = "s3-example-basic-${random_integer.naming.id}"
 }
 
 # Using a KMS key is optional.
@@ -89,7 +91,7 @@ module "example" {
 | Name | Type |
 |------|------|
 | [aws_kms_key.key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
-| [random_pet.naming](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/pet) | resource |
+| [random_integer.naming](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) | resource |
 
 ----
 <!-- END_TF_DOCS -->

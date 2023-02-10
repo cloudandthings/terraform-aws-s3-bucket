@@ -2,11 +2,13 @@
 # Supporting resources
 #--------------------------------------------------------------------------------------
 # Generate unique naming for resources
-resource "random_pet" "naming" {
+resource "random_integer" "naming" {
+  min = 100000
+  max = 999999
 }
 
 locals {
-  naming_prefix = "s3-bucket-example-basic-${random_pet.naming.id}"
+  naming_prefix = "s3-example-basic-${random_integer.naming.id}"
 }
 
 # Using a KMS key is optional.
