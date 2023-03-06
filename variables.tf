@@ -17,6 +17,12 @@ variable "enable_versioning" {
   default     = true
 }
 
+variable "enable_public_access_block" {
+  description = "Whether to enable public_access_block on the bucket."
+  type        = bool
+  default     = true
+}
+
 variable "create_aws_s3_bucket_lifecycle_configuration" {
   description = "Whether to enable the default aws_s3_bucket_lifecycle_configuration on the bucket."
   type        = bool

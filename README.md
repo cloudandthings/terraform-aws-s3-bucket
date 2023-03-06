@@ -70,6 +70,7 @@ See [`CONTRIBUTING.md`](./.github/CONTRIBUTING.md) for further information.
 | <a name="input_bucket_logging_target_prefix"></a> [bucket\_logging\_target\_prefix](#input\_bucket\_logging\_target\_prefix) | Target S3 bucket prefix for logging. | `string` | `""` | no |
 | <a name="input_create_aws_s3_bucket_lifecycle_configuration"></a> [create\_aws\_s3\_bucket\_lifecycle\_configuration](#input\_create\_aws\_s3\_bucket\_lifecycle\_configuration) | Whether to enable the default aws\_s3\_bucket\_lifecycle\_configuration on the bucket. | `bool` | `true` | no |
 | <a name="input_enable_attach_default_bucket_policy"></a> [enable\_attach\_default\_bucket\_policy](#input\_enable\_attach\_default\_bucket\_policy) | Whether to attach the default bucket policy or not (default=true). You may wish to attach the bucket policy document separately, in which case it is an output from this module. | `bool` | `true` | no |
+| <a name="input_enable_public_access_block"></a> [enable\_public\_access\_block](#input\_enable\_public\_access\_block) | Whether to enable public\_access\_block on the bucket. | `bool` | `true` | no |
 | <a name="input_enable_versioning"></a> [enable\_versioning](#input\_enable\_versioning) | Whether to enable versioning on the bucket. | `bool` | `true` | no |
 | <a name="input_force_destroy"></a> [force\_destroy](#input\_force\_destroy) | **Caution** Whether to automatically delete all objects from the bucket when it is destroyed. These objects are NOT recoverable. | `bool` | `false` | no |
 | <a name="input_general_read_only_aws_principals"></a> [general\_read\_only\_aws\_principals](#input\_general\_read\_only\_aws\_principals) | List of AWS principals to give read access to all bucket objects via bucket policy resource. | `list(string)` | `[]` | no |
@@ -122,6 +123,7 @@ No modules.
 | [aws_s3_bucket_logging.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_logging) | resource |
 | [aws_s3_bucket_ownership_controls.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_ownership_controls) | resource |
 | [aws_s3_bucket_policy.default_bucket_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy) | resource |
+| [aws_s3_bucket_public_access_block.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
 | [aws_s3_bucket_server_side_encryption_configuration.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
 | [aws_s3_bucket_versioning.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning) | resource |
 | [aws_iam_policy_document.default_bucket_policy_document](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |

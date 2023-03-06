@@ -3,11 +3,6 @@
 ######################################################################
 ## Bucket
 #tfsec:ignore:aws-s3-enable-bucket-logging
-#tfsec:ignore:aws-s3-block-public-acls
-#tfsec:ignore:aws-s3-block-public-policy
-#tfsec:ignore:aws-s3-ignore-public-acls
-#tfsec:ignore:aws-s3-no-public-buckets
-#tfsec:ignore:aws-s3-specify-public-access-block
 resource "aws_s3_bucket" "this" {
 
   # Naming.
@@ -16,10 +11,21 @@ resource "aws_s3_bucket" "this" {
   # If neither are provided then a unique name is generated.
 
   force_destroy = var.force_destroy
-  #checkov:skip=CKV2_AWS_6:S3 public access block is applied at an account level.
   #checkov:skip=CKV_AWS_144:S3 replication is intentionally disabled by default.
 
   tags = var.tags
+}
+
+## Public Access Block
+resource "aws_s3_bucket_public_access_block" "this" {
+  count = var.enable_public_access_block ? 1 : 0
+
+  bucket = aws_s3_bucket.this.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
 }
 
 ## Bucket Ownership Controls
@@ -63,18 +69,6 @@ resource "aws_s3_bucket_logging" "this" {
   target_bucket = var.bucket_logging_target_bucket
   target_prefix = var.bucket_logging_target_prefix
 }
-
-/*
-# Bucket public access block. This should be set at an account level.
-resource "aws_s3_bucket_public_access_block" "this" {
-  bucket = aws_s3_bucket.this.id
-
-  block_public_acls       = true
-  block_public_policy     = true
-  ignore_public_acls      = true
-  restrict_public_buckets = true
-}
-*/
 
 ## Bucket Lifecycle Configuration
 resource "aws_s3_bucket_lifecycle_configuration" "abort_incomplete_multipart_upload" {
