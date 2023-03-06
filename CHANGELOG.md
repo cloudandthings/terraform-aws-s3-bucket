@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/cloudandthings/terraform-aws-s3-bucket/compare/v1.1.1...v1.2.0) (2023-03-06)
+
+
+### Features
+
+* Add `enable_public_access_block` ([#7](https://github.com/cloudandthings/terraform-aws-s3-bucket/issues/7)) ([a89b332](https://github.com/cloudandthings/terraform-aws-s3-bucket/commit/a89b332da4170381443757fe3d0429c200cb5ae6))
+
 ## [1.1.1](https://github.com/cloudandthings/terraform-aws-s3-bucket/compare/v1.1.0...v1.1.1) (2023-02-10)
 
 
