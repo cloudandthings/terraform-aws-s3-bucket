@@ -51,16 +51,13 @@ repos:
       - id: terraform_tflint
         # Configure tflint by creating and updating the config file below.
         args: ["--args=--config=__GIT_WORKING_DIR__/.tflint.hcl"]
-      #-----------------------------------------
-      # Moved to .github/.pre-commit-config.yaml
-      #-----------------------------------------
-      # - id: terraform_tfsec
-      #   files: ^.*.tf$
-      #   # Configure tfsec by creating and updating the config file below.
-      #   args: ['--args=--config-file=__GIT_WORKING_DIR__/.tfsec-config.yml']
-      # - id: terraform_checkov
-      #   # Configure checkov by creating and updating the config file below.
-      #   args: ['--args=--config-file __GIT_WORKING_DIR__/.checkov-config.yml']
+      - id: terraform_tfsec
+        files: ^.*.tf$
+        # Configure tfsec by creating and updating the config file below.
+        args: ["--args=--config-file=__GIT_WORKING_DIR__/.tfsec-config.yml"]
+      - id: terraform_checkov
+        # Configure checkov by creating and updating the config file below.
+        args: ["--args=--config-file __GIT_WORKING_DIR__/.checkov-config.yml"]
   # Python
   - repo: https://github.com/psf/black
     rev: 22.6.0
@@ -70,6 +67,13 @@ repos:
     rev: 5.0.4
     hooks:
       - id: flake8
+  # Shell
+  - repo: https://github.com/jumanjihouse/pre-commit-hooks
+    rev: 3.0.0
+    hooks:
+      - id: shfmt
+        args: ["-l", "-i", "2", "-ci", "-sr", "-w"]
+      - id: shellcheck
   # PRECOMMIT - GENERAL
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.3.0

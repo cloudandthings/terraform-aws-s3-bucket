@@ -7,10 +7,30 @@ Please note we have a code of conduct, please follow it in all your interactions
 
 ## Development environment
 
-### Dev containers
-We suggest using [Visual Studio Code Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers) to build a local, isolated development environment.
+### With Dev Containers
+We suggest using [VSCode](https://code.visualstudio.com/) and [Visual Studio Code Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers) to build a local, isolated development environment.
+
+You will need to have [Docker](https://www.docker.com/) installed.
 
 Simply open this project in a remote container to get started.
+
+### Without Dev Containers
+If not using a containerised development environment, you will need to ensure that your local environment is correctly configured. A rough guide is shown below.
+
+#### System-wide configuration
+1. Install general binaries required, such as Terraform and Python 3. Review `terraform.tf` and the `.github` workflows for an idea of which versions to use. You may want to use [tfenv](https://github.com/tfutils/tfenv) and (pyenv)[https://github.com/pyenv/pyenv] for switching between different versions if working on several projects.
+1. Install [pre-commit](https://pre-commit.com/).
+1. Install binaries needed by pre-commit hooks. Review `.pre-commit-config.yaml` for a complete list.
+
+Examples of required binaries include:
+   - [terraform-docs](https://terraform-docs.io/)
+   - [TFLint](https://github.com/terraform-linters/tflint)
+   - [tfsec](https://github.com/aquasecurity/tfsec)
+
+#### Repository / workspace configuration
+1. Create and develop in a Python virtual environment, with `python3 -m venv .venv && source .venv/bin/activate`
+1. Install `requirements.txt` into the virtual environment, with `pip install -r requirements.txt`
+1. Install pre-commit hooks specific to this repository, with `pre-commit install`.
 
 ### Reducing clutter
 To improve focus while developing, you may want to configure VSCode to hide all files beginning with `.` from the Explorer view. These files are typically related to low-level environment configuration. To do so, you could add `"**/.*"` to the `files.exclude` setting.

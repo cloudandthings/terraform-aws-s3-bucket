@@ -4,43 +4,66 @@ import os
 import logging
 import json
 
+"""
 
-def terraform_examples_dir():
-    return os.path.join(os.getcwd(), "examples")
+TEST_SEARCH_CONFIGURATION
+
+Configure an ordered list of places to search for Terraform test code.
+
+The configuration is used to resolve each Python test file, to the Terraform code that tftest will use.
+Eg: "test_examples_my_stuff.py" => "examples/my-stuff.py"
+
+Each configuration entry includes:
+    - search_path
+        Path to some Terraform test code, relative to the working directory.
+    - test_namespace (optional)
+        Matches to test_NAMESPACE.py or test_NAMESPACE_IDENTIFIER.py
+        If unspecified, then test_IDENTIFIER.py could be matched.
+
+The first configuration entry to match a test IDENTIFIER will be used for testing.
+"""
+TEST_SEARCH_CONFIGURATION = [
+    {"search_path": "examples", "test_namespace": "examples"},
+    {"search_path": os.path.join("tests", "terraform"), "test_namespace": "terraform"},
+]
 
 
-def terraform_tests_dir():
-    return os.path.join(os.getcwd(), "tests", "terraform")
+def terraform_test_search_configuration():
+    """Create the final test search configuration from TEST_SEARCH_CONFIGURATION
 
-
-def terraform_tests():
-    """Return a list of tests, i.e subdirectories in `tests/terraform/`."""
-    directory = terraform_tests_dir()
-    if os.path.isdir(directory):
-        return [f.name for f in os.scandir(directory) if f.is_dir()]
-    return []
-
-
-def terraform_examples():
-    """Return a list of examples, i.e subdirectories in `examples/`."""
-    directory = terraform_examples_dir()
-    if os.path.isdir(directory):
-        return [f.name for f in os.scandir(directory) if f.is_dir()]
-    return []
-
-
-def terraform_config(terraform_tests, terraform_examples):
-    """Convenience fixture for passing around general Terraform config."""
-    config = {
-        "terraform_tests": terraform_tests,
-        "terraform_examples": terraform_examples,
-    }
-    logging.info(config)
-    return config
+    The following fields are added:
+        - tests_found
+            A dictionary of tests that were found, mapping each test identifier to its location:
+            test_identifier => location
+    """
+    configuration = TEST_SEARCH_CONFIGURATION
+    # Exclude folders that might not exist
+    configuration = [
+        c
+        for c in configuration
+        if os.path.exists(os.path.join(os.cwd(), c["search_path"]))
+    ]
+    logging.info("test_search_configuration=%s", configuration)
+    # Find all matching test code
+    for c, config in enumerate(configuration):
+        search_path = config["search_path"]
+        sub_directories = [f.name for f in os.scandir(search_path) if f.is_dir()]
+        tests_found = {}
+        for sd in sub_directories:
+            test_identifier = sd.replace("-", "_")
+            if test_identifier in tests_found:
+                raise Exception(f"Ambiguous test sub-directory {sd} in {search_path}")
+            tests_found[test_identifier] = sd
+        config["tests_found"] = tests_found
+        configuration[c] = config
+    return configuration
 
 
 # Monkeypatch
 def _cleanup_github_rubbish(in_):
+    """Strip ::debug and ::set-output from the GitHub environment.
+    These strings can throw off the test results.
+    """
     out = in_
     if in_.find("{"):
         out = in_[in_.find("{") : in_.rfind("}")]
@@ -51,27 +74,40 @@ def _cleanup_github_rubbish(in_):
     return out
 
 
-def _get_tf_code_location(test_name):
-    basedir = None
-    tfdir = test_name
-    if "." in tfdir:  # When called with __name__, eg tests.test_examples_basic
-        tfdir = test_name.split(".")[-1]
-        if tfdir.startswith("test_"):
-            tfdir = tfdir[len("test_") :]
-    if tfdir.startswith("examples"):
-        basedir = terraform_examples_dir()
-        tfdir = tfdir[len("examples") + 1 :].replace("_", "-")
-    elif tfdir in terraform_config["terraform_tests"]:
-        basedir = terraform_tests_dir()
-    else:
-        raise Exception(f"Unable to locate Terraform code for test {test_name}")
-    logging.info(f"{basedir=} {tfdir=}")
-    return basedir, tfdir
+def _get_tf_code_location(test_name: str):
+    """Return the location of Terraform test code.
+    test_name should be either:
+     - Python module name, such as 'tests.test_examples_basic'. Requires resolution.
+     - Relative path, such as 'examples/basic' or just 'example'. Does not require resolution.
+    """
+    basedir = os.getcwd()
+    if not (test_name.startswith("tests.") or test_name.startswith("test.")):
+        # No resolution required, test will be found relative to ../
+        tfdir = test_name
+        return basedir, tfdir
+    # Resolution is required; here we resolve the test.
+    # First, change 'tests.test_examples_basic' into 'examples_basic'
+    test_identifier = ".".join(test_name.split(".")[1:])
+    if test_identifier.startswith("test_"):
+        test_identifier = test_identifier[len("test_") :]
+    # Determine namespace, eg "examples", if any
+    test_namespace = None
+    if "_" in test_identifier:
+        test_namespace = test_identifier.split("_")[0]
+        test_identifier = "_".join(test_identifier.split("_")[1:])
+    # Resolve the test
+    search_configuration = terraform_test_search_configuration()
+    for config in search_configuration:
+        if test_namespace == config["test_namespace"]:
+            location = config["tests_found"].get(test_identifier)
+            if location is not None:
+                return config["search_path"], location
 
 
 def _get_tf(test_name, variables=None):
     """Construct and return `tftest.TerraformTest`, for executing Terraform commands."""
     basedir, tfdir = _get_tf_code_location(test_name)
+    logging.info(f"Terraform code located at basedir={basedir} tfdir={tfdir}")
     tf = tftest.TerraformTest(basedir=basedir, tfdir=tfdir)
     # Monkeypatch to avoid github rubbish
     tf._plan_formatter = lambda out: tftest.TerraformPlanOutput(
@@ -84,7 +120,7 @@ def _get_tf(test_name, variables=None):
     variables = variables or {}
     with open(os.path.join(basedir, tfdir, "test.auto.tfvars.json"), "w") as f:
         json.dump(variables, f)
-    tf.setup()
+    tf.setup(input=False)
     return tf
 
 

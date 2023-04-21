@@ -12,6 +12,7 @@ resource "aws_s3_bucket" "this" {
 
   force_destroy = var.force_destroy
   #checkov:skip=CKV_AWS_144:S3 replication is intentionally disabled by default.
+  #checkov:skip=CKV2_AWS_62:Bucket notifications are not required by default.
 
   tags = var.tags
 }
@@ -72,6 +73,7 @@ resource "aws_s3_bucket_logging" "this" {
 
 ## Bucket Lifecycle Configuration
 resource "aws_s3_bucket_lifecycle_configuration" "abort_incomplete_multipart_upload" {
+  #checkov:skip=CKV_AWS_300: There is a period set for aborting failed uploads.
   bucket = aws_s3_bucket.this.bucket
   count  = var.create_aws_s3_bucket_lifecycle_configuration ? 1 : 0
   rule {
