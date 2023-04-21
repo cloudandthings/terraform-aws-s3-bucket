@@ -4,6 +4,10 @@ import os
 import logging
 import json
 
+
+# Resolve to the parent of ./tests
+BASE_DIR = os.getcwd()
+
 """
 
 TEST_SEARCH_CONFIGURATION
@@ -15,7 +19,7 @@ Eg: "test_examples_my_stuff.py" => "examples/my-stuff.py"
 
 Each configuration entry includes:
     - search_path
-        Path to some Terraform test code, relative to the working directory.
+        Path to some Terraform test code, relative to BASE_DIR.
     - test_namespace (optional)
         Matches to test_NAMESPACE.py or test_NAMESPACE_IDENTIFIER.py
         If unspecified, then test_IDENTIFIER.py could be matched.
@@ -41,7 +45,7 @@ def terraform_test_search_configuration():
     configuration = [
         c
         for c in configuration
-        if os.path.exists(os.path.join(os.cwd(), c["search_path"]))
+        if os.path.exists(os.path.join(BASE_DIR, c["search_path"]))
     ]
     logging.info("test_search_configuration=%s", configuration)
     # Find all matching test code
@@ -80,7 +84,7 @@ def _get_tf_code_location(test_name: str):
      - Python module name, such as 'tests.test_examples_basic'. Requires resolution.
      - Relative path, such as 'examples/basic' or just 'example'. Does not require resolution.
     """
-    basedir = os.getcwd()
+    basedir = BASE_DIR
     if not (test_name.startswith("tests.") or test_name.startswith("test.")):
         # No resolution required, test will be found relative to ../
         tfdir = test_name
