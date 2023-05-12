@@ -1,7 +1,7 @@
 """
-Test the Terraform code in the examples directories.
+Test the Terraform code in the examples/basic directory.
 
-This test verifies that each example works by executing it.
+This test verifies that the example works by executing it.
 """
 
 import pytest
