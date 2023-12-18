@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.0.0](https://github.com/cloudandthings/terraform-aws-s3-bucket/compare/v1.2.0...v2.0.0) (2023-12-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* Rename outputs to match AWS provider resource
+* Bump AWS provider to v5
+
+### Bug Fixes
+
+* Bump AWS provider to v5 ([71f885b](https://github.com/cloudandthings/terraform-aws-s3-bucket/commit/71f885b0ce4a1b5770f699ac2c6deac744b1d937))
+* Rename outputs to match AWS provider resource ([6f6541d](https://github.com/cloudandthings/terraform-aws-s3-bucket/commit/6f6541d1f0c60994e27a8cdb4d9f733a6a670ae4))
+
 ## [1.2.0](https://github.com/cloudandthings/terraform-aws-s3-bucket/compare/v1.1.1...v1.2.0) (2023-03-06)
 
 
