@@ -1,4 +1,4 @@
-output "bucket_arn" {
+output "arn" {
   description = "The bucket ARN that is created."
   value       = aws_s3_bucket.this.arn
 }
@@ -8,7 +8,7 @@ output "bucket" {
   value       = aws_s3_bucket.this.bucket
 }
 
-output "bucket_id" {
+output "id" {
   description = "The bucket id that is created."
   value       = aws_s3_bucket.this.id
 }

@@ -78,10 +78,10 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| <a name="output_arn"></a> [arn](#output\_arn) | The bucket ARN that is created. |
 | <a name="output_bucket"></a> [bucket](#output\_bucket) | The bucket that is created. |
-| <a name="output_bucket_arn"></a> [bucket\_arn](#output\_bucket\_arn) | The bucket ARN that is created. |
-| <a name="output_bucket_id"></a> [bucket\_id](#output\_bucket\_id) | The bucket id that is created. |
 | <a name="output_default_bucket_policy_document"></a> [default\_bucket\_policy\_document](#output\_default\_bucket\_policy\_document) | Default bucket policy document, attached to the bucket if `var.attach_default_bucket_policy=true`. |
+| <a name="output_id"></a> [id](#output\_id) | The bucket id that is created. |
 | <a name="output_kms_key_id"></a> [kms\_key\_id](#output\_kms\_key\_id) | The KMS key ID used for encrypting bucket objects. |
 | <a name="output_region"></a> [region](#output\_region) | The bucket region. |
 
@@ -90,7 +90,7 @@ No modules.
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 4.9 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | ~> 5.0 |
 
 ----
 ### Requirements
@@ -98,7 +98,7 @@ No modules.
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.1 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 4.9 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | ~> 5.0 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | ~> 3.1 |
 
 ----

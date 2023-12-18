@@ -88,11 +88,11 @@ def test_s3_bucket_policy(output):
         f"arn:aws:s3:::{bucket_name}/*",
     ]
     assert set(statement["Resource"]) == set(expected_resources)
-    assert "false" == statement["Condition"]["Bool"]["aws:SecureTransport"][0]
+    assert "false" == statement["Condition"]["Bool"]["aws:SecureTransport"]
 
     # ### Compare apparent to actual
     # Change ["false"] to "false" so the next comparison passes
-    if "false" == statement["Condition"]["Bool"]["aws:SecureTransport"][0]:
+    if "false" == statement["Condition"]["Bool"]["aws:SecureTransport"]:
         statement["Condition"]["Bool"]["aws:SecureTransport"] = "false"
 
     apparent_bucket_policy["Statement"] = [statement]

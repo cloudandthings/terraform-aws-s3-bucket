@@ -5,7 +5,7 @@ terraform {
     aws = {
       source = "hashicorp/aws"
       # V5+ does not exist yet, may contain breaking changes.
-      version = "~> 4.9"
+      version = "~> 5.0"
     }
     random = {
       source  = "hashicorp/random"
